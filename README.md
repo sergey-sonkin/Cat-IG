@@ -2,6 +2,8 @@
 
 Automated system for generating post-ironic cat videos using AI and posting them to Instagram accounts for A/B testing.
 
+Built with Go for better performance, concurrency, and single binary deployment.
+
 ## Concept
 
 1. LLM generates quirky cat video prompts
@@ -12,25 +14,47 @@ Automated system for generating post-ironic cat videos using AI and posting them
 
 ## Architecture
 
-- **Prompt Generator**: Creates absurd cat video prompts
-- **Video Generator**: Google Imagen Video API integration
+- **Prompt Generator**: Creates absurd cat video prompts using OpenAI
+- **Video Generator**: Supports Veo 2 (Gemini), Veo 3 (Replicate), and Veo 3 (Vertex AI)
 - **Instagram Poster**: Handles posting and scheduling
-- **Performance Tracker**: Analytics and engagement metrics
+- **Performance Tracker**: Analytics and engagement metrics with thread safety
 - **A/B Testing**: Routes best content to main account
 
 ## Setup
 
 ```bash
-bun install
-bun run dev
+# Install dependencies
+make install
+
+# Copy environment template
+cp .env.example .env
+# Edit .env with your API keys
+
+# Build
+make build
+
+# Run
+make run
+
+# Test video generation
+make test-video
 ```
+
+## Video Providers
+
+- **veo2**: Gemini API (most accessible, cheaper, 5s videos)
+- **veo3-replicate**: Replicate API (~$0.75/second, includes audio, 8s videos)
+- **veo3-vertex**: Vertex AI (newest, requires allowlist access, 8s videos)
+
+Set `VIDEO_PROVIDER` in your .env file.
 
 ## Current Status
 
-- [x] Project initialization and structure
-- [ ] Instagram API integration and policy research
-- [ ] Google video generation API setup
-- [ ] LLM prompt generation system
-- [ ] Content scheduling system
-- [ ] Performance tracking and analytics
-- [ ] A/B testing logic
+- [x] Project initialization and Go structure
+- [x] LLM prompt generation system
+- [x] Google video generation API setup (all 3 providers)
+- [x] Instagram API integration
+- [x] Performance tracking and analytics
+- [x] A/B testing logic
+- [ ] Cron job scheduling for automated posting
+- [ ] Database for persistent storage

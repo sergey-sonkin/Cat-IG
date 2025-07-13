@@ -7,7 +7,13 @@ console.log("🐱 AI Cat Content Generator starting...");
 
 async function main() {
   const promptGen = new PromptGenerator(process.env.OPENAI_API_KEY!);
-  const videoGen = new VideoGenerator(process.env.GOOGLE_API_KEY!);
+  const videoGen = new VideoGenerator(
+    process.env.GEMINI_API_KEY!,
+    process.env.REPLICATE_API_KEY!,
+    process.env.VERTEX_API_KEY!,
+    process.env.GOOGLE_PROJECT_ID!,
+    (process.env.VIDEO_PROVIDER as any) || "veo2"
+  );
   const tracker = new PerformanceTracker();
   
   const testAccounts = [

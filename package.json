@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --hot index.ts",
-    "start": "bun run index.ts"
+    "start": "bun run index.ts",
+    "test-video": "bun run test-video.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -14,6 +15,8 @@
   },
   "dependencies": {
     "openai": "^4.0.0",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "@google/generative-ai": "latest",
+    "replicate": "^0.34.1"
   }
 }
