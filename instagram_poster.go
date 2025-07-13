@@ -9,8 +9,6 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type InstagramPoster struct {
@@ -30,9 +28,9 @@ func (ip *InstagramPoster) PostToAccount(ctx context.Context, video *GeneratedVi
 
 	// Step 1: Upload media
 	mediaPayload := map[string]interface{}{
-		"video_url":    video.VideoURL,
-		"media_type":   "REELS",
-		"caption":      ip.generateCaption(),
+		"video_url":  video.VideoURL,
+		"media_type": "REELS",
+		"caption":    ip.generateCaption(),
 	}
 
 	mediaURL := fmt.Sprintf("https://graph.instagram.com/v18.0/%s/media", account.ID)
@@ -101,7 +99,7 @@ func (ip *InstagramPoster) GetPostPerformance(ctx context.Context, postID, accou
 	}
 
 	url := fmt.Sprintf("https://graph.instagram.com/v18.0/%s?fields=like_count,comments_count,shares_count,play_count&access_token=%s", postID, account.AccessToken)
-	
+
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)

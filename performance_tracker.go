@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sort"
 	"sync"
-	"time"
 )
 
 type PerformanceTracker struct {
@@ -149,12 +148,12 @@ func (pt *PerformanceTracker) GetAnalytics() AnalyticsData {
 }
 
 type AnalyticsData struct {
-	TotalPosts            int                `json:"total_posts"`
-	TotalViews            int                `json:"total_views"`
-	TotalLikes            int                `json:"total_likes"`
-	AverageEngagementRate float64            `json:"average_engagement_rate"`
-	BestPerformingPost    *PostPerformance   `json:"best_performing_post"`
-	OptimalTimes          []OptimalTimeSlot  `json:"optimal_times"`
+	TotalPosts            int               `json:"total_posts"`
+	TotalViews            int               `json:"total_views"`
+	TotalLikes            int               `json:"total_likes"`
+	AverageEngagementRate float64           `json:"average_engagement_rate"`
+	BestPerformingPost    *PostPerformance  `json:"best_performing_post"`
+	OptimalTimes          []OptimalTimeSlot `json:"optimal_times"`
 }
 
 type timeSlotData struct {
