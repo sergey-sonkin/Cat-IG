@@ -24,25 +24,46 @@ type VideoGenerator struct {
 }
 
 func NewVideoGenerator(geminiAPIKey, replicateAPIKey, vertexAPIKey, projectID string, provider VideoProvider) (*VideoGenerator, error) {
-	ctx := context.Background()
-	
-	geminiClient, err := genai.NewClient(ctx, option.WithAPIKey(geminiAPIKey))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create Gemini client: %w", err)
+	vg := &VideoGenerator{
+		vertexAPIKey: vertexAPIKey,
+		projectID:    projectID,
+		provider:     provider,
 	}
 
-	replicateClient, err := replicate.NewClient(replicate.WithToken(replicateAPIKey))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create Replicate client: %w", err)
+	// Only initialize the client we need based on provider
+	switch provider {
+	case Veo2:
+		if geminiAPIKey == "" {
+			return nil, fmt.Errorf("GEMINI_API_KEY is required for veo2 provider")
+		}
+		ctx := context.Background()
+		geminiClient, err := genai.NewClient(ctx, option.WithAPIKey(geminiAPIKey))
+		if err != nil {
+			return nil, fmt.Errorf("failed to create Gemini client: %w", err)
+		}
+		vg.geminiClient = geminiClient
+
+	case Veo3Replicate:
+		if replicateAPIKey == "" {
+			return nil, fmt.Errorf("REPLICATE_API_KEY is required for veo3-replicate provider")
+		}
+		replicateClient, err := replicate.NewClient(replicate.WithToken(replicateAPIKey))
+		if err != nil {
+			return nil, fmt.Errorf("failed to create Replicate client: %w", err)
+		}
+		vg.replicateClient = replicateClient
+
+	case Veo3Vertex:
+		if vertexAPIKey == "" || projectID == "" {
+			return nil, fmt.Errorf("VERTEX_API_KEY and GOOGLE_PROJECT_ID are required for veo3-vertex provider")
+		}
+		// No client initialization needed for Vertex AI (uses HTTP directly)
+
+	default:
+		return nil, fmt.Errorf("unknown video provider: %s", provider)
 	}
 
-	return &VideoGenerator{
-		geminiClient:    geminiClient,
-		replicateClient: replicateClient,
-		vertexAPIKey:    vertexAPIKey,
-		projectID:       projectID,
-		provider:        provider,
-	}, nil
+	return vg, nil
 }
 
 func (vg *VideoGenerator) GenerateVideo(ctx context.Context, prompt *VideoPrompt) (*GeneratedVideo, error) {

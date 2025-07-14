@@ -26,18 +26,38 @@ Built with Go for better performance, concurrency, and single binary deployment.
 # Install dependencies
 make install
 
-# Copy environment template
+# Copy environment template (optional - can use shell env vars)
 cp .env.example .env
-# Edit .env with your API keys
+# Edit .env with your API keys, OR set them in your shell
 
 # Build
 make build
 
-# Run
-make run
+# Run full pipeline (requires Instagram API keys)
+go run main_full.go types.go prompt_generator.go video_generator.go instagram_poster.go performance_tracker.go
 
-# Test video generation
-make test-video
+# Test video generation only (recommended first)
+go run main.go types.go prompt_generator.go video_generator.go
+```
+
+## Testing Video Generation
+
+The simplified test script (`main.go`) will:
+1. Generate 3 absurd cat prompts using OpenAI
+2. Create a video from the first prompt 
+3. Test a custom business cat prompt
+4. Display video URLs and generation times
+
+**Required environment variables:**
+- `OPENAI_API_KEY` - for prompt generation
+- `GEMINI_API_KEY` - if using veo2 provider  
+- `REPLICATE_API_KEY` - if using veo3-replicate provider
+- `VIDEO_PROVIDER` - set to `veo2`, `veo3-replicate`, or `veo3-vertex`
+
+**Quick test:**
+```bash
+export VIDEO_PROVIDER=veo3-replicate  # or veo2
+go run main.go types.go prompt_generator.go video_generator.go
 ```
 
 ## Video Providers
